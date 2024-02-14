@@ -1330,70 +1330,7 @@
             }
         }
         // ============================================
-        if (data.Sender !== Player.MemberNumber && (data.Type === "Chat" || data.Type === "Whisper" || data.Type === "Emote") && !data.Content.includes("[T]") && !data.Content.includes("📞") && !data.Content.includes("🔊") && !data.Content.includes("\\") && !data.Content.includes("/")) {
-            let sourceText = data.Dictionary?.find(d => d.Tag === "BCX_ORIGINAL_MESSAGE")?.Text ?? data.Content;
-            let sourceLang = 'auto';
-            let targetLang = currentLanguage;
-
-            if (targetLang !== sourceLang) {
-                let url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + sourceLang + "&tl=" + targetLang + "&dt=t&q=" + encodeURI(sourceText);
-                fetch(url)
-                    .then(response => response.json())
-                    .then((dt) => {
-                        if (dt && dt[0] && dt[0][0] && dt[0][0][0]) {
-                            let translatedText = dt[0][0][0].replace("[T]", ""); // 去掉翻译中的[T]
-
-                            if (translatedText !== sourceText) {
-                                ChatRoomMessage({ Content: "📞 " + translatedText, Type: "Chat", Sender: Player.MemberNumber, Dictionary: [{ Tag: '发送私聊', Text: 1 }] });
-                            }
-                        } else {
-                            //console.log("无效的翻译数据:", dt);
-                        }
-                    })
-                    .catch(error => {
-                        //console.error("翻译请求失败:", error);
-                    });
-            }
-        }
-        if (data.Sender === Player.MemberNumber && (data.Type === "Chat" || data.Type === "Whisper" || data.Type === "Emote") && !data.Content.includes("[T]") && !data.Content.includes("📞") && !data.Content.includes("🔊") && !data.Content.includes("\\") && !data.Content.includes("/")) {
-            let sourceText = data.Dictionary?.find(d => d.Tag === "BCX_ORIGINAL_MESSAGE")?.Text ?? data.Content;
-            let sourceLang = 'auto';
-            let targetLang = currentLanguage2;
-
-            if (targetLang !== sourceLang) {
-                let url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + sourceLang + "&tl=" + targetLang + "&dt=t&q=" + encodeURI(sourceText);
-                fetch(url)
-                    .then(response => response.json())
-                    .then((dt) => {
-                        if (dt && dt[0] && dt[0][0] && dt[0][0][0]) {
-                            let translatedText = dt[0][0][0].replace("[T]", ""); // 去掉翻译中的[T]
-
-                            if (translatedText !== sourceText) {
-                                ServerSend("ChatRoomChat", {
-                                    Content: "🔊 " + translatedText, // 不包含[T]的翻译文本
-                                    Type: "Chat",
-                                    Dictionary: [
-                                        { SourceCharacter: !Player.MemberNumber },
-                                        { TargetCharacter: Player.MemberNumber },
-                                        { Tag: 'FocusAssetGroup', FocusGroupName: '0 0' },
-                                        { ActivityName: '0 0' },
-                                        { Tag: '0 0', Text: 10 },
-                                    ]
-                                });
-                            }
-                        } else {
-                            //console.log("无效的翻译数据:", dt);
-                        }
-                    })
-                    .catch(error => {
-                        //console.error("翻译请求失败:", error);
-                    });
-            }
-        }
-
-        next(args);
-    });
-
+       
     //============================================================
     //============================================================
     // 保存高潮开关和次数到ECHO
